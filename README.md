@@ -1,0 +1,2 @@
+# Ishop
+Aplikacja sklepu internetowego

@@ -75,9 +75,4 @@ public class Product {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
-
-    public void setCooler(Cooler savedCooler) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCooler'");
-    }
 }

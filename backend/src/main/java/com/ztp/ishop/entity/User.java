@@ -1,5 +1,7 @@
 package com.ztp.ishop.entity;
 
+import com.ztp.ishop.enums.Role;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,8 +27,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private String type;
+    private Role type;
 
     public User() {
     }
@@ -79,11 +82,11 @@ public class User {
         this.password = password;
     }
 
-    public String getType() {
+    public Role getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Role type) {
         this.type = type;
     }
 }

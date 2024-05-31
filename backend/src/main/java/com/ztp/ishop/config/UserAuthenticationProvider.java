@@ -35,15 +35,18 @@ public class UserAuthenticationProvider {
     public String createToken(UserDTO user) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + 3600000); // 1 hour
-
+    
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
-                .withSubject(user.getLogin())
+                .withSubject(user.getEmail())
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
-                .withClaim("role", user.getType().name())
+                
+                .withClaim("type", user.getType().name())
+                .withClaim("name", user.getName())
+                .withClaim("surname", user.getSurname())
                 .sign(algorithm);
-    }
+    }    
 
     public Authentication validateToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -56,6 +59,10 @@ public class UserAuthenticationProvider {
         UserDTO user = userService.findByEmail(decoded.getSubject());
 
         return new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(user.getType()));
+    }
+
+    public UserService getUserService() {
+        return userService;
     }
 
 }

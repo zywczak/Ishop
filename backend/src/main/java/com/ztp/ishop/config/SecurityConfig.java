@@ -66,18 +66,69 @@ public class SecurityConfig {
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth .requestMatchers(toH2Console()).permitAll())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/cpus/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/cpus/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/cpus/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/rams/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/rams/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/rams/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/coolers/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/coolers/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/coolers/**").hasRole("ADMIN")    
+                        // .requestMatchers("/h2-console/**").permitAll()
+                        // .requestMatchers(HttpMethod.GET, "/user/profile").hasAnyRole("ADMIN", "USER")
+                        // .requestMatchers(HttpMethod.DELETE, "/cpus/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.POST, "/cpus/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.PUT, "/cpus/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.DELETE, "/rams/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.POST, "/rams/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.PUT, "/rams/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.DELETE, "/coolers/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.POST, "/coolers/**").hasRole("ADMIN")
+                        // .requestMatchers(HttpMethod.PUT, "/coolers/**").hasRole("ADMIN")    
                         .anyRequest().permitAll())
         ;
         return http.build();
     }
 }
+
+
+
+
+
+// @RequiredArgsConstructor
+// @Configuration
+// @EnableWebSecurity
+// @EnableMethodSecurity
+// public class SecurityConfig {
+
+//     @Bean
+//     public CorsConfigurationSource corsConfigurationSource() {
+//         CorsConfiguration configuration = new CorsConfiguration();
+//         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+//         configuration.setAllowedMethods(List.of(
+//                 HttpMethod.GET.name(),
+//                 HttpMethod.POST.name(),
+//                 HttpMethod.PUT.name(),
+//                 HttpMethod.DELETE.name(),
+//                 HttpMethod.OPTIONS.name()));
+//         configuration.setAllowedHeaders(List.of(
+//                 HttpHeaders.AUTHORIZATION,
+//                 HttpHeaders.CONTENT_TYPE));
+//         configuration.setAllowCredentials(true);
+//         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//         source.registerCorsConfiguration("/**", configuration);
+//         return source;
+//     }
+
+//     private final UserAuthenticationProvider userAuthenticationProvider;
+
+//     @Bean
+//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//         http
+//             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//             .exceptionHandling(exception -> exception
+//                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+//             .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
+//             .authorizeHttpRequests(auth -> auth
+//                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+//                 .requestMatchers(toH2Console()).permitAll()
+//                 .anyRequest().permitAll())
+//             .headers(headers -> headers.frameOptions().disable())
+//             .csrf(AbstractHttpConfigurer::disable)
+//             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+//         return http.build();
+//     }
+// }

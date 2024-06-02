@@ -1,7 +1,15 @@
 package com.ztp.ishop.controller;
 
 import com.ztp.ishop.entity.Basket;
+import com.ztp.ishop.entity.Product;
+import com.ztp.ishop.entity.User;
 import com.ztp.ishop.repository.BasketRepository;
+import com.ztp.ishop.repository.ProductRepository;
+import com.ztp.ishop.services.UserService;
+
+import jakarta.transaction.Transactional;
+
+import com.ztp.ishop.dto.BasketDto;
 import com.ztp.ishop.dto.UserDTO;
 
 import java.util.List;
@@ -21,6 +29,12 @@ public class BasketController {
     @Autowired
     private BasketRepository basketRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserService userService;
+
     @Value("${security.jwt.token.secret-key:secret-key}")
     private String secretKey;
 
@@ -31,52 +45,103 @@ public class BasketController {
 
         List<Basket> myBaskets = basketRepository.findByUserId(userDto.getId());
         
+        myBaskets.forEach(basket -> {
+        Product product = basket.getProduct();
+        String photoUrl = String.format("http://localhost:8080/products/%d/photo", 
+                                        product.getId());
+        product.setPhoto(photoUrl);
+ 
+    });
         return new ResponseEntity<>(myBaskets, HttpStatus.OK);
     }
 
+    @Transactional
+    @DeleteMapping
+    public ResponseEntity<String> clearBasketForCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO userDto = (UserDTO) authentication.getPrincipal();
+        basketRepository.deleteByUserId(userDto.getId());
+        
+        return ResponseEntity.ok("Basket cleared successfully");
+    }
 
+    @Transactional
+    @PostMapping
+    public ResponseEntity<Basket> addProductToBasket(@RequestBody BasketDto basketDto) {
 
-//     @PostMapping("/{product_id}/add")
-//     public ResponseEntity<?> addProductToBasket(@PathVariable("product_id") Long productId) {
-//         try {
-//             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//             String jwtToken = (String) authentication.getCredentials();
-//             Algorithm algorithm = Algorithm.HMAC256(secretKey);
-//             DecodedJWT decodedJWT = JWT.require(algorithm).build().verify(jwtToken);
-//             String userEmail = decodedJWT.getSubject();
-//             UserDTO user = userAuthenticationProvider.getUserService().findByEmail(userEmail);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO userDto = (UserDTO) authentication.getPrincipal();
 
-//             if (user == null) {
-//                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-//             }
+        User user = userService.findById(userDto.getId());
+        Product product = productRepository.findById(basketDto.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-//             Basket basket = basketRepository.findByUserId(user.getId());
+        // Sprawdź, czy produkt jest już w koszyku użytkownika
+        Basket existingBasket = basketRepository.findByUserAndProduct(user, product);
 
-//             if (basket == null) {
-//                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User's basket not found");
-//             }
+        if (existingBasket != null) {
+            // Jeśli produkt już istnieje w koszyku, zwiększ ilość o 1
+            existingBasket.setQuantity(existingBasket.getQuantity() + 1);
+            Basket updatedBasket = basketRepository.save(existingBasket);
+            return new ResponseEntity<>(updatedBasket, HttpStatus.CREATED);
+        } else {
+            // Jeśli produkt nie istnieje w koszyku, dodaj nowy wpis z ilością 1
+            Basket basket = new Basket();
+            basket.setUser(user);
+            basket.setProduct(product);
+            basket.setQuantity(1);
+            Basket savedBasket = basketRepository.save(basket);
+            return new ResponseEntity<>(savedBasket, HttpStatus.CREATED);
+        }
+    }
 
-//             Optional<Product> productOptional = basket.getProducts().stream()
-//                     .filter(product -> product.getId().equals(productId))
-//                     .findFirst();
+    @Transactional
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> removeProductFromBasket(@PathVariable Long productId) {
 
-//             if (productOptional.isPresent()) {
-//                 // If product is already in the basket, increase its quantity by 1
-//                 Product product = productOptional.get();
-//                 product.setQuantity(product.getQuantity() + 1);
-//             } else {
-//                 // If product is not in the basket, add it with quantity 1
-//                 Product product = new Product(); // Assuming you have a Product class
-//                 product.setId(productId);
-//                 product.setQuantity(1);
-//                 basket.getProducts().add(product);
-//             }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO userDto = (UserDTO) authentication.getPrincipal();
 
-//             basketRepository.save(basket);
+        User user = userService.findById(userDto.getId());
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-//             return ResponseEntity.ok(basket);
-//         } catch (Exception e) {
-//             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
-//         }
-//     }
+        // Sprawdź, czy produkt jest w koszyku użytkownika
+        Basket existingBasket = basketRepository.findByUserAndProduct(user, product);
+
+        if (existingBasket != null) {
+            // Jeśli ilość produktu w koszyku jest większa niż 1, zmniejsz ilość o 1
+            if (existingBasket.getQuantity() > 1) {
+                existingBasket.setQuantity(existingBasket.getQuantity() - 1);
+                basketRepository.save(existingBasket);
+            } else {
+                // Jeśli ilość produktu w koszyku wynosi 1, usuń produkt z koszyka
+                basketRepository.delete(existingBasket);
+            }
+            return ResponseEntity.ok("Product removed from basket");
+        } else {
+            return ResponseEntity.badRequest().body("Product not found in basket");
+        }
+    }
+
+    @Transactional
+    @DeleteMapping("/remove/{productId}")
+    public ResponseEntity<String> removeProductFromBasketForUser(@PathVariable Long productId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO userDto = (UserDTO) authentication.getPrincipal();
+
+        User user = userService.findById(userDto.getId());
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        // Sprawdź, czy produkt jest w koszyku użytkownika
+        Basket existingBasket = basketRepository.findByUserAndProduct(user, product);
+
+        if (existingBasket != null) {
+            // Usuń produkt z koszyka
+            basketRepository.delete(existingBasket);
+            return ResponseEntity.ok("Product removed from basket");
+        } else {
+            return ResponseEntity.badRequest().body("Product not found in basket");
+        }
+    }
 }

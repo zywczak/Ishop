@@ -46,7 +46,7 @@ public class CoolerController {
         List<Cooler> coolers = coolerRepository.findAll();
         for (Cooler cooler : coolers) {
             if (cooler.getProduct() != null) {
-                cooler.getProduct().setPhoto("http://localhost:8080/coolers/" + cooler.getId() + "/photo");
+                cooler.getProduct().setPhoto("http://localhost:8080/products/" + cooler.getProduct().getId() + "/photo");
             }
         }
         return ResponseEntity.ok(coolers);
@@ -57,7 +57,7 @@ public class CoolerController {
         Cooler cooler = coolerRepository.findById(id).orElse(null);
         if (cooler != null) {
             if (cooler.getProduct() != null) {
-                cooler.getProduct().setPhoto("http://localhost:8080/coolers/" + id + "/photo");
+                cooler.getProduct().setPhoto("http://localhost:8080/products/" + cooler.getProduct().getId() + "/photo");
             }
             return ResponseEntity.ok(cooler);
         } else {

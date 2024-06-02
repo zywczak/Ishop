@@ -45,7 +45,7 @@ public class MotherboardController {
         List<Motherboard> motherboards = motherboardRepository.findAll();
         for (Motherboard motherboard : motherboards) {
             if (motherboard.getProduct() != null) {
-                motherboard.getProduct().setPhoto("http://localhost:8080/motherboards/" + motherboard.getId() + "/photo");
+                motherboard.getProduct().setPhoto("http://localhost:8080/products/" + motherboard.getProduct().getId() + "/photo");
             }
         }
         return motherboards;
@@ -56,7 +56,7 @@ public class MotherboardController {
         Motherboard motherboard = motherboardRepository.findById(id).orElse(null);
         if (motherboard != null) {
             if (motherboard.getProduct() != null) {
-                motherboard.getProduct().setPhoto("http://localhost:8080/motherboards/" + id + "/photo");
+                motherboard.getProduct().setPhoto("http://localhost:8080/products/" + motherboard.getProduct().getId() + "/photo");
             }
             return ResponseEntity.ok(motherboard);
         } else {

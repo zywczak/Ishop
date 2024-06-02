@@ -20,4 +20,12 @@ public class UserDTO {
     private String email;
     private String token;
     private Role type;
+
+    public UserDTO toEntity() {
+        UserDTO user = new UserDTO();
+        user.setId(this.getId());
+        user.setName(this.getName());
+
+        return user;
+    }
 }

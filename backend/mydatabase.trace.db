@@ -1513,3 +1513,47 @@ The connection was not closed by the application and is garbage collected [90018
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Błąd składniowy w wyrażeniu SQL "INSERT INTO basket values([*], 2,1,1)"; oczekiwano "), DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
 Syntax error in SQL statement "INSERT INTO basket values([*], 2,1,1)"; expected "), DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
 INSERT INTO basket values(, 2,1,1) [42001-214]
+2024-06-02 10:15:55 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabela "PRODUCT" nie istnieje
+Table "PRODUCT" not found; SQL statement:
+select * from product [42102-214]
+2024-06-02 13:08:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 13:08:39 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 13:08:43 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 13:11:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabela "PRODUCT" nie istnieje
+Table "PRODUCT" not found; SQL statement:
+select * from product [42102-214]
+2024-06-02 13:18:52 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 13:30:47 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 15:01:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 15:01:33 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 16:08:22 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 16:08:25 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 16:08:57 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 16:35:02 jdbc[16]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]
+2024-06-02 17:49:47 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Obiekt jest zamknięty
+The object is already closed [90007-214]

@@ -45,7 +45,7 @@ public class RamController {
         List<RAM> rams = ramRepository.findAll();
         for (RAM ram : rams) {
             if (ram.getProduct() != null) {
-                ram.getProduct().setPhoto("http://localhost:8080/rams/" + ram.getId() + "/photo");
+                ram.getProduct().setPhoto("http://localhost:8080/products/" + ram.getProduct().getId() + "/photo");
             }
         }
         return rams;
@@ -56,7 +56,7 @@ public class RamController {
         RAM ram = ramRepository.findById(id).orElse(null);
         if (ram != null) {
             if (ram.getProduct() != null) {
-                ram.getProduct().setPhoto("http://localhost:8080/rams/" + id + "/photo");
+                ram.getProduct().setPhoto("http://localhost:8080/products/" + ram.getProduct().getId() + "/photo");
             }
             return ResponseEntity.ok(ram);
         } else {

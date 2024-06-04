@@ -33,7 +33,7 @@ http://localhost:3000
 - springboot
 
 ## Diagram ERD
-![Diagram_ERD](https://github.com/zywczak/Ishop/blob/main/Diagram%20ERD.png)
+![Diagram_ERD](https://github.com/zywczak/Ishop/blob/main/Diagram_ERD.png)
 
 ## Autorzy
 Piotr Żywczak
